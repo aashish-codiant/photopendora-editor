@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button"
+import Editor from "./editor/Editor"
 
 export default function Home() {
   return (
     <div>
-      <Button>Click me</Button>
+      <Editor/>
     </div>
   )
 }

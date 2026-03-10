@@ -1,0 +1,14 @@
+
+C:\Users\codiant\Desktop\Shopify Apps\photopandora-editor\src\components\ui\button.tsx
+  67:18  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\codiant\Desktop\Shopify Apps\photopandora-editor\src\features\editor\Editor.tsx
+  1:10  error  'useState' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\codiant\Desktop\Shopify Apps\photopandora-editor\src\features\editor\components\CanvasStage.tsx
+   9:33  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  10:27  error  Unexpected any. Specify a different type          @typescript-eslint/no-explicit-any
+  12:20  error  'setElements' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 5 problems (5 errors, 0 warnings)
+
