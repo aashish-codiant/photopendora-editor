@@ -12,14 +12,18 @@ const ORNAMENTS = [
 ];
 
 const AssetLibrary: React.FC = () => {
-    const { addImageElement } = useEditorStore();
+    const { addImageElement, template } = useEditorStore();
+
+    const assetsToDisplay = template?.allowedAssets 
+        ? ORNAMENTS.filter(a => template.allowedAssets.some(allowed => a.name.toLowerCase().includes(allowed.toLowerCase())))
+        : ORNAMENTS;
 
     return (
         <div className="p-4 space-y-6">
             <h3 className="text-sm font-semibold text-gray-900">Ornaments</h3>
             
             <div className="grid grid-cols-2 gap-3">
-                {ORNAMENTS.map((asset, index) => (
+                {assetsToDisplay.map((asset, index) => (
                     <button
                         key={index}
                         onClick={() => addImageElement(asset.url)}
@@ -36,6 +40,13 @@ const AssetLibrary: React.FC = () => {
                     </button>
                 ))}
             </div>
+
+            {assetsToDisplay.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-10 opacity-40">
+                    <ImageIcon size={32} />
+                    <p className="text-xs mt-2">No ornaments allowed for this product</p>
+                </div>
+            )}
 
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
                 <div className="flex gap-2">

@@ -1,6 +1,6 @@
 import type { Element } from '../types/element';
 
-export const generateSVG = (elements: Element[], width: number = 800, height: number = 600) => {
+export const generateSVG = (elements: Element[], width: number = 800, height: number = 600, download: boolean = true): string => {
     let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
 
     elements.forEach((el) => {
@@ -35,8 +35,6 @@ export const generateSVG = (elements: Element[], width: number = 800, height: nu
             const w = el.width || 100;
             const h = el.height || 100;
             
-            // Adjust x and y if Konva uses center origin for images (usually it's top-left unless specified)
-            // Assuming top-left for simplicity in this generator
             svgContent += `
     <image 
         href="${el.assetUrl}" 
@@ -51,13 +49,17 @@ export const generateSVG = (elements: Element[], width: number = 800, height: nu
 
     svgContent += '\n</svg>';
 
-    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `production-${Date.now()}.svg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    if (download) {
+        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `production-${Date.now()}.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    return svgContent;
 };

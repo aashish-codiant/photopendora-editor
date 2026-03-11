@@ -13,7 +13,7 @@ const FONTS = [
 ];
 
 const FontPanel: React.FC = () => {
-    const { elements, selectedElementId, updateElement } = useEditorStore();
+    const { elements, selectedElementId, updateElement, template } = useEditorStore();
     const pushState = useHistoryStore(state => state.pushState);
     const selectedElement = elements.find(el => el.id === selectedElementId);
 
@@ -25,6 +25,8 @@ const FontPanel: React.FC = () => {
             </div>
         );
     }
+
+    const fontsToDisplay = template?.allowedFonts?.length ? template.allowedFonts : FONTS;
 
     const toggleStyle = (style: 'bold' | 'italic') => {
         let currentStyle = selectedElement.fontStyle || 'normal';
@@ -61,7 +63,7 @@ const FontPanel: React.FC = () => {
                         pushState(elements);
                     }}
                 >
-                    {FONTS.map(font => (
+                    {fontsToDisplay.map(font => (
                         <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
                     ))}
                 </select>

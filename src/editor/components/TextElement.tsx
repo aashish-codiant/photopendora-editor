@@ -11,7 +11,7 @@ interface TextElementProps {
 
 export const TextElement: React.FC<TextElementProps> = ({ element }) => {
   const textRef = useRef<Konva.Text>(null);
-  const { elements, updateElement, selectElement } = useEditorStore();
+  const { elements, updateElement, selectElement, template } = useEditorStore();
   const pushState = useHistoryStore(state => state.pushState);
 
   return (
@@ -30,6 +30,18 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
       scaleX={1}
       scaleY={1}
       draggable
+      dragBoundFunc={(pos) => {
+        if (!template) return pos;
+        const area = template.personalizationArea;
+        const node = textRef.current;
+        if (!node) return pos;
+
+        // Simplified Bounding box check for anchors
+        return {
+          x: Math.max(area.x, Math.min(pos.x, area.x + area.width - node.width() * node.scaleX())),
+          y: Math.max(area.y, Math.min(pos.y, area.y + area.height - node.height() * node.scaleY())),
+        };
+      }}
       onClick={(e) => {
         e.cancelBubble = true;
         selectElement(element.id);

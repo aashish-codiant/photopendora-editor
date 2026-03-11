@@ -4,7 +4,7 @@ import { useHistoryStore } from '../store/historyStore';
 import { AlignLeft, AlignCenter, AlignRight, Bold, Italic } from 'lucide-react';
 
 export const PropertiesPanel: React.FC = () => {
-    const { elements, selectedElementId, updateElement } = useEditorStore();
+    const { elements, selectedElementId, updateElement, template } = useEditorStore();
     const pushState = useHistoryStore(state => state.pushState);
 
     const element = elements.find((el) => el.id === selectedElementId);
@@ -96,10 +96,20 @@ export const PropertiesPanel: React.FC = () => {
             {element.type === 'text' && (
                 <>
                     <div className="space-y-3">
-                        <h3 className="text-sm font-semibold text-slate-700">Text Content</h3>
+                        <div className="flex justify-between items-center mb-1">
+                            <h3 className="text-sm font-semibold text-slate-700">Text Content</h3>
+                            {template?.maxCharacters && (
+                                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${(element.text?.length || 0) >= (template.maxCharacters || 0) ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
+                                    {element.text?.length || 0} / {template.maxCharacters}
+                                </span>
+                            )}
+                        </div>
                         <textarea
                             value={element.text || ''}
-                            onChange={(e) => handleUpdate({ text: e.target.value })}
+                            onChange={(e) => {
+                                if (template?.maxCharacters && e.target.value.length > template.maxCharacters) return;
+                                handleUpdate({ text: e.target.value });
+                            }}
                             onBlur={() => pushState(elements)}
                             rows={3}
                             className="w-full px-3 py-2 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"

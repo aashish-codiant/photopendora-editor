@@ -1,10 +1,15 @@
 import { create } from 'zustand';
 import type { Element } from '../types/element';
+import type { ProductTemplate } from '../types/template';
 import { useHistoryStore } from './historyStore';
 
 interface EditorState {
     elements: Element[];
     selectedElementId: string | null;
+    template: ProductTemplate | null;
+    designId: string | null;
+    setTemplate: (template: ProductTemplate) => void;
+    setDesignId: (id: string) => void;
     addTextElement: () => void;
     addImageElement: (url: string) => void;
     updateElement: (id: string, attrs: Partial<Element>) => void;
@@ -19,6 +24,10 @@ interface EditorState {
 export const useEditorStore = create<EditorState>((set) => ({
     elements: [],
     selectedElementId: null,
+    template: null,
+    designId: null,
+    setTemplate: (template) => set({ template }),
+    setDesignId: (id) => set({ designId: id }),
     addTextElement: () => {
         const newId = `text_${Date.now()}`;
         const newElement: Element = {
