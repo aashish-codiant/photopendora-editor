@@ -13,4 +13,6 @@ export interface Element {
     align?: "left" | "center" | "right";
     fontStyle?: "normal" | "bold" | "italic" | "italic bold";
     assetUrl?: string;
+    width?: number;
+    height?: number;
 }

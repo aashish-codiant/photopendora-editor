@@ -3,6 +3,7 @@ import { Text } from 'react-konva';
 import Konva from 'konva';
 import type { Element } from '../types/element';
 import { useEditorStore } from '../store/editorStore';
+import { useHistoryStore } from '../store/historyStore';
 
 interface TextElementProps {
   element: Element;
@@ -10,8 +11,8 @@ interface TextElementProps {
 
 export const TextElement: React.FC<TextElementProps> = ({ element }) => {
   const textRef = useRef<Konva.Text>(null);
-  const updateElement = useEditorStore((state) => state.updateElement);
-  const selectElement = useEditorStore((state) => state.selectElement);
+  const { elements, updateElement, selectElement } = useEditorStore();
+  const pushState = useHistoryStore(state => state.pushState);
 
   return (
     <Text
@@ -42,6 +43,7 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
           x: e.target.x(),
           y: e.target.y(),
         });
+        pushState(elements);
       }}
       onTransformEnd={() => {
         const node = textRef.current;
@@ -60,6 +62,7 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
           // Use Math.max to prevent fontSize turning 0
           fontSize: Math.max(5, (element.fontSize || 40) * scaleX),
         });
+        pushState(elements);
       }}
     />
   );

@@ -4,6 +4,7 @@ import useImage from 'use-image';
 import Konva from 'konva';
 import type { Element } from '../types/element';
 import { useEditorStore } from '../store/editorStore';
+import { useHistoryStore } from '../store/historyStore';
 
 interface ImageElementProps {
   element: Element;
@@ -11,8 +12,8 @@ interface ImageElementProps {
 
 export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
   const imageRef = useRef<Konva.Image>(null);
-  const updateElement = useEditorStore((state) => state.updateElement);
-  const selectElement = useEditorStore((state) => state.selectElement);
+  const { elements, updateElement, selectElement } = useEditorStore();
+  const pushState = useHistoryStore(state => state.pushState);
   
   const [img] = useImage(element.assetUrl || '');
 
@@ -40,6 +41,7 @@ export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
           x: e.target.x(),
           y: e.target.y(),
         });
+        pushState(elements);
       }}
       onTransformEnd={() => {
         const node = imageRef.current;
@@ -51,6 +53,7 @@ export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
           scaleX: node.scaleX(),
           scaleY: node.scaleY(),
         });
+        pushState(elements);
       }}
     />
   );
