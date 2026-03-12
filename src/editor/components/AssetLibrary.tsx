@@ -1,26 +1,49 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useEditorStore } from '../store/editorStore';
-import { Image as ImageIcon } from 'lucide-react';
-
-const ORNAMENTS = [
-    { name: 'Floral 1', url: 'https://cdn-icons-png.flaticon.com/512/3233/3233486.png' },
-    { name: 'Floral 2', url: 'https://cdn-icons-png.flaticon.com/512/3233/3233493.png' },
-    { name: 'Star', url: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' },
-    { name: 'Heart', url: 'https://cdn-icons-png.flaticon.com/512/833/833472.png' },
-    { name: 'Banner', url: 'https://cdn-icons-png.flaticon.com/512/3232/3232675.png' },
-    { name: 'Crown', url: 'https://cdn-icons-png.flaticon.com/512/1042/1042301.png' },
-];
+import { Image as ImageIcon, Upload } from 'lucide-react';
+import { AVAILABLE_ORNAMENTS } from "../constants/ornaments";
 
 const AssetLibrary: React.FC = () => {
     const { addImageElement, template } = useEditorStore();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const result = event.target?.result;
+            if (typeof result === 'string') {
+                addImageElement(result);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
 
     const assetsToDisplay = template?.allowedAssets 
-        ? ORNAMENTS.filter(a => template.allowedAssets.some(allowed => a.name.toLowerCase().includes(allowed.toLowerCase())))
-        : ORNAMENTS;
+        ? AVAILABLE_ORNAMENTS.filter(a => template.allowedAssets.some(allowed => a.name.toLowerCase().includes(allowed.toLowerCase())))
+        : AVAILABLE_ORNAMENTS;
 
     return (
         <div className="p-4 space-y-6">
-            <h3 className="text-sm font-semibold text-gray-900">Ornaments</h3>
+            <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-gray-900">Ornaments</h3>
+                <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs font-medium hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-100"
+                >
+                    <Upload size={14} />
+                    Upload
+                </button>
+                <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    className="hidden" 
+                    accept="image/*" 
+                    onChange={handleFileUpload}
+                />
+            </div>
             
             <div className="grid grid-cols-2 gap-3">
                 {assetsToDisplay.map((asset, index) => (

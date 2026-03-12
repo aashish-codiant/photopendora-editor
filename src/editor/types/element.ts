@@ -12,6 +12,8 @@ export interface Element {
     fill?: string;
     align?: "left" | "center" | "right";
     fontStyle?: "normal" | "bold" | "italic" | "italic bold";
+    letterSpacing?: number;
+    lineHeight?: number;
     assetUrl?: string;
     width?: number;
     height?: number;

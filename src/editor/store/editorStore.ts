@@ -8,10 +8,12 @@ interface EditorState {
     selectedElementId: string | null;
     template: ProductTemplate | null;
     designId: string | null;
+    userUploads: string[];
     setTemplate: (template: ProductTemplate) => void;
     setDesignId: (id: string) => void;
     addTextElement: () => void;
     addImageElement: (url: string) => void;
+    addUserUpload: (url: string) => void;
     updateElement: (id: string, attrs: Partial<Element>) => void;
     selectElement: (id: string | null) => void;
     deselectElement: () => void;
@@ -26,6 +28,7 @@ export const useEditorStore = create<EditorState>((set) => ({
     selectedElementId: null,
     template: null,
     designId: null,
+    userUploads: [],
     setTemplate: (template) => set({ template }),
     setDesignId: (id) => set({ designId: id }),
     addTextElement: () => {
@@ -71,6 +74,7 @@ export const useEditorStore = create<EditorState>((set) => ({
             };
         });
     },
+    addUserUpload: (url) => set((state) => ({ userUploads: [url, ...state.userUploads] })),
     updateElement: (id, attrs) =>
         set((state) => ({
             elements: state.elements.map((el) =>

@@ -27,6 +27,8 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
       align={element.align}
       fontStyle={element.fontStyle}
       rotation={element.rotation}
+      letterSpacing={element.letterSpacing || 0}
+      lineHeight={element.lineHeight || 1}
       scaleX={1}
       scaleY={1}
       draggable

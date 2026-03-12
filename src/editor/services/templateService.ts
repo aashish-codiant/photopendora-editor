@@ -13,8 +13,8 @@ const MOCK_TEMPLATES: Record<string, ProductTemplate> = {
             width: 400,
             height: 120
         },
-        allowedFonts: ["Montserrat", "Playfair Display", "Arial"],
-        allowedAssets: ["heart", "flower", "crown", "star"],
+        allowedFonts: ["Montserrat", "Playfair Display", "Arial", "Dancing Script", "Pacifico", "Lobster", "Bebas Neue", "Satisfy", "Caveat"],
+        allowedAssets: ["heart", "flower", "crown", "star", "Floral 1"],
         maxTextElements: 2,
         maxCharacters: 20
     },
@@ -25,12 +25,12 @@ const MOCK_TEMPLATES: Record<string, ProductTemplate> = {
         canvasHeight: 800,
         baseImage: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800&h=800",
         personalizationArea: {
-            x: 200,
-            y: 200,
-            width: 400,
-            height: 400
+            x: 50,
+            y: 50,
+            width: 700,
+            height: 700
         },
-        allowedFonts: ["Arial", "Georgia", "Courier New"],
+        allowedFonts: ["Arial", "Open Sans", "Roboto", "Lato", "Oswald", "Quicksand", "Montserrat"],
         allowedAssets: ["floral", "banner"],
         maxTextElements: 3,
         maxCharacters: 50

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useEditorStore } from '../store/editorStore';
 import { useHistoryStore } from '../store/historyStore';
-import { AlignLeft, AlignCenter, AlignRight, Bold, Italic } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Bold, Italic, Type } from 'lucide-react';
+import { AVAILABLE_FONTS } from '../constants/fonts';
 
 export const PropertiesPanel: React.FC = () => {
     const { elements, selectedElementId, updateElement, template } = useEditorStore();
@@ -145,6 +146,25 @@ export const PropertiesPanel: React.FC = () => {
                             </div>
                         </div>
 
+                        <div className="pt-2">
+                            <label className="text-xs text-slate-500 mb-1 block">Font Family</label>
+                            <div className="relative">
+                                <select
+                                    value={element.fontFamily || 'Arial'}
+                                    onChange={(e) => handleUpdate({ fontFamily: e.target.value }, true)}
+                                    className="w-full pl-8 pr-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white font-medium"
+                                    style={{ fontFamily: element.fontFamily || 'Arial' }}
+                                >
+                                    {AVAILABLE_FONTS.filter(f => !template?.allowedFonts?.length || template.allowedFonts.includes(f.name)).map((font) => (
+                                        <option key={font.name} value={font.name} style={{ fontFamily: font.family }}>
+                                            {font.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <Type size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                            </div>
+                        </div>
+
                         {/* Formatting */}
                         <div className="pt-2">
                             <label className="text-xs text-slate-500 mb-1 block">Formatting</label>
@@ -185,6 +205,41 @@ export const PropertiesPanel: React.FC = () => {
                                 >
                                     <Italic size={16} />
                                 </button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="text-xs text-slate-500">Letter Spacing</label>
+                                    <span className="text-[10px] font-mono text-slate-400">{element.letterSpacing || 0}</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="-2"
+                                    max="20"
+                                    step="0.5"
+                                    value={element.letterSpacing || 0}
+                                    onChange={(e) => handleUpdate({ letterSpacing: parseFloat(e.target.value) })}
+                                    onBlur={() => pushState(elements)}
+                                    className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="text-xs text-slate-500">Line Height</label>
+                                    <span className="text-[10px] font-mono text-slate-400">{element.lineHeight || 1}</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="0.8"
+                                    max="2.5"
+                                    step="0.1"
+                                    value={element.lineHeight || 1}
+                                    onChange={(e) => handleUpdate({ lineHeight: parseFloat(e.target.value) })}
+                                    onBlur={() => pushState(elements)}
+                                    className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none"
+                                />
                             </div>
                         </div>
                     </div>
