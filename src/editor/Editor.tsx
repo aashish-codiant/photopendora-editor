@@ -15,7 +15,11 @@ export const Editor: React.FC = () => {
     const [leftTab, setLeftTab] = useState<'layers' | 'assets'>('layers');
     const [rightTab, setRightTab] = useState<'properties' | 'fonts'>('properties');
     const [searchParams] = useSearchParams();
+    const platform = searchParams.get('platform');
+    const shop = searchParams.get('shop');
     const productId = searchParams.get('productId');
+    const variantId = searchParams.get('variantId');
+    const quantity = searchParams.get('quantity');
 
     const { template, setTemplate, setDesignId, designId, elements } = useEditorStore();
     const [loading, setLoading] = useState(true);
@@ -70,6 +74,23 @@ export const Editor: React.FC = () => {
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Editor Error</h2>
                 <p className="text-slate-600 mb-6">{error}</p>
+                platform:- {platform}<br />
+                {platform === "shopify" && (
+                    <div className='border border-purple-400 bg-purple-50 p-4 my-4 rounded-lg'>
+                        <p>platform:- {platform}</p>
+                        <p>shop:- {shop}</p>
+                        <p>productId:- {productId}</p>
+                        <p>variantId:- {variantId}</p>
+                        <p>quantity:- {quantity}</p>
+                    </div>
+                )}
+                {platform == "etsy" && (
+                    <div className='border border-purple-400 bg-purple-50 p-4 my-4 rounded-lg'>
+                        <p>platform:- {platform}</p>
+                        <p>shop:- {shop}</p>
+                        <p>listingId:- {productId}</p>
+                    </div>
+                )}
                 <div className="flex gap-4">
                     <a href="/" className="px-6 py-2 bg-slate-200 text-slate-800 rounded-md hover:bg-slate-300 transition-all font-medium">Go Home</a>
                     <button onClick={() => window.location.reload()} className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all font-medium">Retry</button>

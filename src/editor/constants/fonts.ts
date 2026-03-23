@@ -13,5 +13,4 @@ export const AVAILABLE_FONTS = [
     { name: 'Caveat', family: 'Caveat, cursive' },
     { name: 'Satisfy', family: 'Satisfy, cursive' },
     { name: 'Quicksand', family: 'Quicksand, sans-serif' },
-    
 ];
