@@ -17,6 +17,7 @@ export const CurvedTextElement: React.FC<CurvedTextElementProps> = React.memo(({
   // Default curve parameters
   const radius = element.radius || 120;
   const arcAngle = (element.arcAngle || 180) * (Math.PI / 180); // convert to radians
+  const letterSpacing = element.letterSpacing || 0;
   const text = element.text || '';
   
   // Calculate character positions
@@ -25,10 +26,13 @@ export const CurvedTextElement: React.FC<CurvedTextElementProps> = React.memo(({
     if (chars.length === 0) return [];
     
     // Calculate angle step per character
-    const angleStep = arcAngle / Math.max(1, chars.length - 1);
+    // letterSpacing shifts characters further apart
+    const spacingFactor = 1 + (letterSpacing / 10);
+    const adjustedArcAngle = arcAngle * spacingFactor;
+    const angleStep = adjustedArcAngle / Math.max(1, chars.length - 1);
     
     // Start angle is centered around the top (-Math.PI / 2)
-    const startAngle = -Math.PI / 2 - arcAngle / 2;
+    const startAngle = -Math.PI / 2 - adjustedArcAngle / 2;
 
     return chars.map((char, i) => {
       // Angle for this character

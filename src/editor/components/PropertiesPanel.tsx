@@ -261,6 +261,32 @@ export const PropertiesPanel: React.FC = () => {
                             </div>
                         </div>
 
+                        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div className="flex flex-col">
+                                <span className="text-sm font-semibold text-slate-700">Curved Text</span>
+                                <span className="text-[10px] text-slate-400">Transform text along an arc</span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const isCurrentlyCurved = element.type === 'curvedText';
+                                    handleUpdate({ 
+                                        type: isCurrentlyCurved ? 'text' : 'curvedText',
+                                        radius: isCurrentlyCurved ? undefined : 120,
+                                        arcAngle: isCurrentlyCurved ? undefined : 180
+                                    }, true);
+                                }}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                                    element.type === 'curvedText' ? 'bg-indigo-600' : 'bg-slate-200'
+                                }`}
+                            >
+                                <span
+                                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                        element.type === 'curvedText' ? 'translate-x-6' : 'translate-x-1'
+                                    }`}
+                                />
+                            </button>
+                        </div>
+
                         {element.type === 'curvedText' && (
                             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100 mt-2">
                                 <div>

@@ -93,20 +93,6 @@ export const EditorToolbar: React.FC = () => {
                 Add Text
             </button>
 
-            <button
-                onClick={addCurvedTextElement}
-                disabled={!canAddText}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-medium shadow-sm ${
-                    canAddText 
-                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' 
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'
-                }`}
-                title={canAddText ? "Add Curved Text" : `Limit of ${template?.maxTextElements} text elements reached`}
-            >
-                <Type size={18} className="rotate-[15deg]" />
-                Curved Text
-            </button>
-
             <div className="h-8 w-px bg-slate-200 mx-1" />
 
             {/* History */}
