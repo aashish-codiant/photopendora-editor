@@ -12,7 +12,9 @@ interface EditorState {
     setTemplate: (template: ProductTemplate) => void;
     setDesignId: (id: string) => void;
     addTextElement: () => void;
+    addCurvedTextElement: () => void;
     addImageElement: (url: string) => void;
+    addSvgElement: (url: string, colorEditable?: boolean) => void;
     addUserUpload: (url: string) => void;
     updateElement: (id: string, attrs: Partial<Element>) => void;
     selectElement: (id: string | null) => void;
@@ -54,6 +56,30 @@ export const useEditorStore = create<EditorState>((set) => ({
             };
         });
     },
+    addCurvedTextElement: () => {
+        const newId = `curvedText_${Date.now()}`;
+        const newElement: Element = {
+            id: newId,
+            type: "curvedText",
+            x: 400,
+            y: 300,
+            rotation: 0,
+            text: "Curved Text",
+            fontSize: 32,
+            fontFamily: "Arial",
+            fill: "#000000",
+            fontStyle: "normal",
+            radius: 120,
+            arcAngle: 180,
+        };
+        set((state) => {
+            useHistoryStore.getState().pushState(state.elements);
+            return {
+                elements: [...state.elements, newElement],
+                selectedElementId: newId
+            };
+        });
+    },
     addImageElement: (url) => {
         const newId = `image_${Date.now()}`;
         const newElement: Element = {
@@ -65,6 +91,28 @@ export const useEditorStore = create<EditorState>((set) => ({
             height: 200,
             rotation: 0,
             assetUrl: url,
+        };
+        set((state) => {
+            useHistoryStore.getState().pushState(state.elements);
+            return {
+                elements: [...state.elements, newElement],
+                selectedElementId: newId
+            };
+        });
+    },
+    addSvgElement: (url, colorEditable = false) => {
+        const newId = `svg_${Date.now()}`;
+        const newElement: Element = {
+            id: newId,
+            type: "svg",
+            x: 400,
+            y: 300,
+            width: 150,
+            height: 150,
+            rotation: 0,
+            svgUrl: url,
+            colorEditable,
+            tintColor: "#000000", // Default tint color
         };
         set((state) => {
             useHistoryStore.getState().pushState(state.elements);

@@ -1,9 +1,10 @@
 import React from 'react';
 import { useEditorStore } from '../store/editorStore';
-import { Layers, ChevronUp, ChevronDown, Trash2, Type, Image as ImageIcon } from 'lucide-react';
+import { Layers, ChevronUp, ChevronDown, Trash2, Type, Image as ImageIcon, Sparkles, Lock, Unlock } from 'lucide-react';
+
 
 const LayersPanel: React.FC = () => {
-    const { elements, selectedElementId, selectElement, deleteElement, bringForward, sendBackward } = useEditorStore();
+    const { elements, selectedElementId, selectElement, deleteElement, bringForward, sendBackward, updateElement } = useEditorStore();
 
     // Reverse elements for display so top layer is at top of list
     const reversedElements = [...elements].reverse();
@@ -36,22 +37,35 @@ const LayersPanel: React.FC = () => {
                         <div className={`p-2 rounded-md ${
                             selectedElementId === el.id ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-50 text-gray-500'
                         }`}>
-                            {el.type === 'text' ? <Type className="h-4 w-4" /> : <ImageIcon className="h-4 w-4" />}
+                            {el.type === 'text' && <Type className="h-4 w-4" />}
+                            {el.type === 'curvedText' && <Type className="h-4 w-4" />}
+                            {el.type === 'image' && <ImageIcon className="h-4 w-4" />}
+                            {el.type === 'svg' && <Sparkles className="h-4 w-4" />}
                         </div>
 
                         {/* Label */}
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
-                                {el.type === 'text' ? (el.text || 'Text Layer') : 'Image Layer'}
-                            </p>
-                            <p className="text-[10px] text-gray-500 uppercase">
-                                {el.type} layer
-                            </p>
+                        <div className="flex-1 min-w-0 flex items-center gap-2">
+                            <div>
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                    {(el.type === 'text' || el.type === 'curvedText') ? (el.text || 'Text Layer') : 'Image Layer'}
+                                </p>
+                                <p className="text-[10px] text-gray-500 uppercase">
+                                    {el.type === 'curvedText' ? 'Curved Text' : el.type === 'svg' ? 'SVG Ornament' : el.type} layer
+                                </p>
+                            </div>
+                            {el.locked && <Lock className="h-3 w-3 text-amber-500 ml-auto" />}
                         </div>
 
                         {/* Actions */}
                         {selectedElementId === el.id && (
                             <div className="flex items-center gap-1">
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); updateElement(el.id, { locked: !el.locked }); }}
+                                    className="p-1 hover:bg-white rounded-md transition-colors"
+                                    title={el.locked ? "Unlock" : "Lock"}
+                                >
+                                    {el.locked ? <Lock className="h-4 w-4 text-amber-600" /> : <Unlock className="h-4 w-4 text-gray-400" />}
+                                </button>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); bringForward(el.id); }}
                                     className="p-1 hover:bg-white rounded-md transition-colors"

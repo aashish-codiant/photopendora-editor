@@ -3,11 +3,14 @@ import { Bold, Italic, Type, Check } from 'lucide-react';
 import { useEditorStore } from '../store/editorStore';
 import { useHistoryStore } from '../store/historyStore';
 import { AVAILABLE_FONTS } from '../constants/fonts';
+import { loadFont } from '../utils/fontLoader';
+import { Loader2 } from 'lucide-react';
 
 const FontPanel: React.FC = () => {
     const { elements, selectedElementId, updateElement, template } = useEditorStore();
     const pushState = useHistoryStore(state => state.pushState);
     const selectedElement = elements.find(el => el.id === selectedElementId);
+    const [loadingFont, setLoadingFont] = React.useState<string | null>(null);
 
     if (!selectedElement || selectedElement.type !== 'text') {
         return (
@@ -137,17 +140,24 @@ const FontPanel: React.FC = () => {
                     {filteredFonts.map((font) => (
                         <button
                             key={font.name}
-                            onClick={() => {
+                            onClick={async () => {
+                                setLoadingFont(font.name);
+                                await loadFont(font.name, font.googleFontUrl);
                                 updateElement(selectedElement.id, { fontFamily: font.name });
                                 pushState(elements);
+                                setLoadingFont(null);
                             }}
+                            disabled={loadingFont === font.name}
                             className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all group ${selectedElement.fontFamily === font.name
                                     ? 'bg-indigo-50 border-indigo-200 shadow-sm'
                                     : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'
-                                }`}
+                                } ${loadingFont === font.name ? 'opacity-70 cursor-wait' : ''}`}
                         >
                             <div className="flex flex-col items-start transition-transform group-active:scale-95">
-                                <span className="text-xs text-slate-400 font-medium mb-1">{font.name}</span>
+                                <span className="text-xs text-slate-400 font-medium mb-1 flex items-center gap-2">
+                                    {font.name}
+                                    {loadingFont === font.name && <Loader2 size={12} className="animate-spin text-indigo-400" />}
+                                </span>
                                 <span
                                     className={`text-lg transition-colors ${selectedElement.fontFamily === font.name ? 'text-indigo-700' : 'text-slate-800'}`}
                                     style={{ fontFamily: font.family }}
@@ -155,7 +165,7 @@ const FontPanel: React.FC = () => {
                                     {selectedElement?.text}
                                 </span>
                             </div>
-                            {selectedElement.fontFamily === font.name && (
+                            {selectedElement.fontFamily === font.name && loadingFont !== font.name && (
                                 <div className="bg-indigo-600 p-1 rounded-full text-white">
                                     <Check size={12} strokeWidth={3} />
                                 </div>

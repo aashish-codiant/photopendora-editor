@@ -5,11 +5,13 @@ import { useHistoryStore } from '../store/historyStore';
 import { exportDesign } from '../utils/exportDesign';
 import { generateSVG } from '../utils/generateSVG';
 import { generatePreview } from '../utils/generatePreview';
+import { exportStageAsImage } from '../utils/exportImage';
 import Konva from 'konva';
 
 export const EditorToolbar: React.FC = () => {
     const { 
         addTextElement, 
+        addCurvedTextElement,
         deleteElement, 
         selectedElementId, 
         elements, 
@@ -66,8 +68,13 @@ export const EditorToolbar: React.FC = () => {
         console.log("Full Design Session Exported:", session);
         alert("Design Session Submitted! Preview generated and designs exported.");
         
+        // Trigger high-res PNG download
+        exportStageAsImage(stage, elements, { 
+            filename: `production-${template?.productId || 'design'}-${Date.now()}.png` 
+        });
+        
         // Also trigger JSON download
-        exportDesign(elements);
+        exportDesign(elements, template?.productId);
     };
 
     return (
@@ -84,6 +91,20 @@ export const EditorToolbar: React.FC = () => {
             >
                 <Type size={18} />
                 Add Text
+            </button>
+
+            <button
+                onClick={addCurvedTextElement}
+                disabled={!canAddText}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all text-sm font-medium shadow-sm ${
+                    canAddText 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' 
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'
+                }`}
+                title={canAddText ? "Add Curved Text" : `Limit of ${template?.maxTextElements} text elements reached`}
+            >
+                <Type size={18} className="rotate-[15deg]" />
+                Curved Text
             </button>
 
             <div className="h-8 w-px bg-slate-200 mx-1" />
@@ -113,12 +134,15 @@ export const EditorToolbar: React.FC = () => {
             {/* Export */}
             <div className="flex gap-2">
                 <button
-                    onClick={() => exportDesign(elements)}
+                    onClick={() => {
+                        const stage = Konva.stages[0];
+                        if (stage) exportStageAsImage(stage, elements);
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-md hover:bg-slate-50 transition-colors text-sm font-medium shadow-sm cursor-pointer"
-                    title="Export Design JSON"
+                    title="Export High-Res PNG"
                 >
                     <Download size={18} />
-                    Export JSON
+                    Export PNG
                 </button>
                 
                 <button

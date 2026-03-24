@@ -4,7 +4,7 @@ import { Image as ImageIcon, Upload } from 'lucide-react';
 import { AVAILABLE_ORNAMENTS } from "../constants/ornaments";
 
 const AssetLibrary: React.FC = () => {
-    const { addImageElement, template } = useEditorStore();
+    const { addImageElement, addSvgElement, template } = useEditorStore();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +49,7 @@ const AssetLibrary: React.FC = () => {
                 {assetsToDisplay.map((asset, index) => (
                     <button
                         key={index}
-                        onClick={() => addImageElement(asset.url)}
+                        onClick={() => addSvgElement(asset.url, true)}
                         className="group relative p-2 border border-gray-100 rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition-all aspect-square flex items-center justify-center overflow-hidden"
                     >
                         <img 

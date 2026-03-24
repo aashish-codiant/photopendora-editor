@@ -4,6 +4,8 @@ import useImage from 'use-image';
 import { useEditorStore } from '../store/editorStore';
 import { TextElement } from './TextElement';
 import { ImageElement } from './ImageElement';
+import { CurvedTextElement } from './CurvedTextElement';
+import { SvgElement } from './SvgElement';
 import { TransformerBox } from './TransformerBox';
 import { useHistoryStore } from '../store/historyStore';
 import Konva from 'konva';
@@ -69,6 +71,7 @@ export const CanvasStage: React.FC = () => {
 
                     {/* Personalization Area */}
                     <Rect
+                        id="personalization-area"
                         x={template.personalizationArea.x}
                         y={template.personalizationArea.y}
                         width={template.personalizationArea.width}
@@ -83,8 +86,14 @@ export const CanvasStage: React.FC = () => {
                         if (element.type === 'text') {
                             return <TextElement key={element.id} element={element} />;
                         }
+                        if (element.type === 'curvedText') {
+                            return <CurvedTextElement key={element.id} element={element} />;
+                        }
                         if (element.type === 'image') {
                             return <ImageElement key={element.id} element={element} />;
+                        }
+                        if (element.type === 'svg') {
+                            return <SvgElement key={element.id} element={element} />;
                         }
                         return null;
                     })}

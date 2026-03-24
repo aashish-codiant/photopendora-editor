@@ -10,7 +10,7 @@ interface ImageElementProps {
   element: Element;
 }
 
-export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
+export const ImageElement: React.FC<ImageElementProps> = React.memo(({ element }) => {
   const imageRef = useRef<Konva.Image>(null);
   const { elements, updateElement, selectElement, template } = useEditorStore();
   const pushState = useHistoryStore(state => state.pushState);
@@ -27,7 +27,7 @@ export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
       scaleY={element.scaleY || 1}
       image={img}
       rotation={element.rotation}
-      draggable
+      draggable={!element.locked}
       dragBoundFunc={(pos) => {
         if (!template) return pos;
         const area = template.personalizationArea;
@@ -40,10 +40,12 @@ export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
         };
       }}
       onClick={(e) => {
+        if (element.locked) return;
         e.cancelBubble = true;
         selectElement(element.id);
       }}
       onTap={(e) => {
+        if (element.locked) return;
         e.cancelBubble = true;
         selectElement(element.id);
       }}
@@ -68,4 +70,6 @@ export const ImageElement: React.FC<ImageElementProps> = ({ element }) => {
       }}
     />
   );
-};
+});
+
+ImageElement.displayName = 'ImageElement';

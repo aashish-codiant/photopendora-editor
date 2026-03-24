@@ -1,8 +1,9 @@
 import React from 'react';
 import { useEditorStore } from '../store/editorStore';
 import { useHistoryStore } from '../store/historyStore';
-import { AlignLeft, AlignCenter, AlignRight, Bold, Italic, Type } from 'lucide-react';
+import { AlignLeft, AlignCenter, AlignRight, Bold, Italic, Type, Lock, Unlock } from 'lucide-react';
 import { AVAILABLE_FONTS } from '../constants/fonts';
+import { loadFont } from '../utils/fontLoader';
 
 export const PropertiesPanel: React.FC = () => {
     const { elements, selectedElementId, updateElement, template } = useEditorStore();
@@ -58,7 +59,17 @@ export const PropertiesPanel: React.FC = () => {
 
             {/* Position & Size */}
             <div className="space-y-3">
-                <h3 className="text-sm font-semibold text-slate-700">Transform</h3>
+                <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-semibold text-slate-700">Transform</h3>
+                    <button
+                        onClick={() => handleUpdate({ locked: !element.locked }, true)}
+                        className={`p-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${element.locked ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                        title={element.locked ? "Unlock element" : "Lock element"}
+                    >
+                        {element.locked ? <Lock size={14} /> : <Unlock size={14} />}
+                        {element.locked ? 'Locked' : 'Unlocked'}
+                    </button>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                     <div>
                         <label className="text-xs text-slate-500 mb-1 block">X</label>
@@ -94,7 +105,7 @@ export const PropertiesPanel: React.FC = () => {
             </div>
 
             {/* Text Specific Properties */}
-            {element.type === 'text' && (
+            {(element.type === 'text' || element.type === 'curvedText') && (
                 <>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center mb-1">
@@ -151,7 +162,14 @@ export const PropertiesPanel: React.FC = () => {
                             <div className="relative">
                                 <select
                                     value={element.fontFamily || 'Arial'}
-                                    onChange={(e) => handleUpdate({ fontFamily: e.target.value }, true)}
+                                    onChange={async (e) => {
+                                        const fontName = e.target.value;
+                                        const fontData = AVAILABLE_FONTS.find(f => f.name === fontName);
+                                        if (fontData) {
+                                            await loadFont(fontName, fontData.googleFontUrl);
+                                        }
+                                        handleUpdate({ fontFamily: fontName }, true);
+                                    }}
                                     className="w-full pl-8 pr-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white font-medium"
                                     style={{ fontFamily: element.fontFamily || 'Arial' }}
                                 >
@@ -242,8 +260,65 @@ export const PropertiesPanel: React.FC = () => {
                                 />
                             </div>
                         </div>
+
+                        {element.type === 'curvedText' && (
+                            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100 mt-2">
+                                <div>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="text-xs text-slate-500">Curve Radius</label>
+                                        <span className="text-[10px] font-mono text-slate-400">{element.radius || 120}</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="20"
+                                        max="500"
+                                        step="1"
+                                        value={element.radius || 120}
+                                        onChange={(e) => handleUpdate({ radius: parseFloat(e.target.value) })}
+                                        onBlur={() => pushState(elements)}
+                                        className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="text-xs text-slate-500">Arc Angle (°)</label>
+                                        <span className="text-[10px] font-mono text-slate-400">{element.arcAngle || 180}</span>
+                                    </div>
+                                    <input
+                                        type="range"
+                                        min="10"
+                                        max="360"
+                                        step="1"
+                                        value={element.arcAngle || 180}
+                                        onChange={(e) => handleUpdate({ arcAngle: parseFloat(e.target.value) })}
+                                        onBlur={() => pushState(elements)}
+                                        className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </>
+            )}
+
+            {/* SVG Specific Properties */}
+            {element.type === 'svg' && element.colorEditable && (
+                <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-slate-700">SVG Colors</h3>
+                    <div>
+                        <label className="text-xs text-slate-500 mb-1 block">Tint Color</label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="color"
+                                value={element.tintColor || '#000000'}
+                                onChange={(e) => handleUpdate({ tintColor: e.target.value })}
+                                onBlur={() => pushState(elements)}
+                                className="w-8 h-8 rounded cursor-pointer border-none bg-transparent"
+                            />
+                            <span className="text-sm text-slate-600 uppercase font-mono">{element.tintColor || '#000000'}</span>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

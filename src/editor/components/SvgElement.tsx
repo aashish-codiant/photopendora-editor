@@ -1,47 +1,46 @@
 import React, { useRef } from 'react';
-import { Text } from 'react-konva';
+import { Group, Image as KonvaImage, Rect } from 'react-konva';
+import useImage from 'use-image';
 import Konva from 'konva';
 import type { Element } from '../types/element';
 import { useEditorStore } from '../store/editorStore';
 import { useHistoryStore } from '../store/historyStore';
 
-interface TextElementProps {
+interface SvgElementProps {
   element: Element;
 }
 
-export const TextElement: React.FC<TextElementProps> = React.memo(({ element }) => {
-  const textRef = useRef<Konva.Text>(null);
+export const SvgElement: React.FC<SvgElementProps> = React.memo(({ element }) => {
+  const groupRef = useRef<Konva.Group>(null);
+  const imageRef = useRef<Konva.Image>(null);
+  
   const { elements, updateElement, selectElement, template } = useEditorStore();
   const pushState = useHistoryStore(state => state.pushState);
+  
+  const [img] = useImage(element.svgUrl || '');
 
   return (
-    <Text
-      ref={textRef}
+    <Group
+      ref={groupRef}
       id={element.id}
       x={element.x}
       y={element.y}
-      text={element.text}
-      fontSize={element.fontSize}
-      fontFamily={element.fontFamily}
-      fill={element.fill}
-      align={element.align}
-      fontStyle={element.fontStyle}
       rotation={element.rotation}
-      letterSpacing={element.letterSpacing || 0}
-      lineHeight={element.lineHeight || 1}
-      scaleX={1}
-      scaleY={1}
+      scaleX={element.scaleX || 1}
+      scaleY={element.scaleY || 1}
       draggable={!element.locked}
       dragBoundFunc={(pos) => {
         if (!template) return pos;
         const area = template.personalizationArea;
-        const node = textRef.current;
+        const node = groupRef.current;
         if (!node) return pos;
 
-        // Simplified Bounding box check for anchors
+        const w = (element.width || 100) * node.scaleX();
+        const h = (element.height || 100) * node.scaleY();
+
         return {
-          x: Math.max(area.x, Math.min(pos.x, area.x + area.width - node.width() * node.scaleX())),
-          y: Math.max(area.y, Math.min(pos.y, area.y + area.height - node.height() * node.scaleY())),
+          x: Math.max(area.x, Math.min(pos.x, area.x + area.width - w)),
+          y: Math.max(area.y, Math.min(pos.y, area.y + area.height - h)),
         };
       }}
       onClick={(e) => {
@@ -62,26 +61,34 @@ export const TextElement: React.FC<TextElementProps> = React.memo(({ element }) 
         pushState(elements);
       }}
       onTransformEnd={() => {
-        const node = textRef.current;
+        const node = groupRef.current;
         if (!node) return;
-
-        const scaleX = node.scaleX();
-        
-        // Convert scale into fontSize and reset scale
-        node.scaleX(1);
-        node.scaleY(1);
-
         updateElement(element.id, {
           x: node.x(),
           y: node.y(),
           rotation: node.rotation(),
-          // Use Math.max to prevent fontSize turning 0
-          fontSize: Math.max(5, (element.fontSize || 40) * scaleX),
+          scaleX: node.scaleX(),
+          scaleY: node.scaleY(),
         });
         pushState(elements);
       }}
-    />
+    >
+      <KonvaImage
+        ref={imageRef}
+        image={img}
+        width={element.width || 100}
+        height={element.height || 100}
+      />
+      {element.colorEditable && element.tintColor && (
+        <Rect
+          width={element.width || 100}
+          height={element.height || 100}
+          fill={element.tintColor}
+          globalCompositeOperation="source-atop"
+        />
+      )}
+    </Group>
   );
 });
 
-TextElement.displayName = 'TextElement';
+SvgElement.displayName = 'SvgElement';
