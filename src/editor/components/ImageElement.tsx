@@ -59,10 +59,14 @@ export const ImageElement: React.FC<ImageElementProps> = React.memo(({ element }
       onTransformEnd={() => {
         const node = imageRef.current;
         if (!node) return;
+
+        let rot = node.rotation();
+        rot = ((rot % 360) + 360) % 360;
+
         updateElement(element.id, {
           x: node.x(),
           y: node.y(),
-          rotation: node.rotation(),
+          rotation: rot,
           scaleX: node.scaleX(),
           scaleY: node.scaleY(),
         });

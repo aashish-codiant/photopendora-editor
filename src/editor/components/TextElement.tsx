@@ -71,10 +71,13 @@ export const TextElement: React.FC<TextElementProps> = React.memo(({ element }) 
         node.scaleX(1);
         node.scaleY(1);
 
+        let rot = node.rotation();
+        rot = ((rot % 360) + 360) % 360;
+
         updateElement(element.id, {
           x: node.x(),
           y: node.y(),
-          rotation: node.rotation(),
+          rotation: rot,
           // Use Math.max to prevent fontSize turning 0
           fontSize: Math.max(5, (element.fontSize || 40) * scaleX),
         });

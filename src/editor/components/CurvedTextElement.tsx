@@ -96,10 +96,13 @@ export const CurvedTextElement: React.FC<CurvedTextElementProps> = React.memo(({
         node.scaleX(1);
         node.scaleY(1);
 
+        let rot = node.rotation();
+        rot = ((rot % 360) + 360) % 360;
+
         updateElement(element.id, {
           x: node.x(),
           y: node.y(),
-          rotation: node.rotation(),
+          rotation: rot,
           radius: newRadius,
         });
         pushState(elements);

@@ -95,8 +95,14 @@ export const PropertiesPanel: React.FC = () => {
                         <label className="text-xs text-slate-500 mb-1 block">Rotation (°)</label>
                         <input
                             type="number"
+                            min="-180"
+                            max="180"
                             value={Math.round(element.rotation)}
-                            onChange={(e) => handleUpdate({ rotation: Number(e.target.value) })}
+                            onChange={(e) => {
+                                let val = Number(e.target.value);
+                                val = ((val % 360) + 360) % 360;
+                                handleUpdate({ rotation: val });
+                            }}
                             onBlur={() => pushState(elements)}
                             className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
