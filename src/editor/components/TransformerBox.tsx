@@ -16,7 +16,13 @@ export const TransformerBox: React.FC<TransformerBoxProps> = ({ stageRef }) => {
       if (selectedElementId) {
         const selectedNode = stageRef.current.findOne(`#${selectedElementId}`);
         if (selectedNode) {
-          trRef.current.nodes([selectedNode]);
+          // Check if element is locked
+          const element = useEditorStore.getState().elements.find(el => el.id === selectedElementId);
+          if (element?.locked) {
+            trRef.current.nodes([]);
+          } else {
+            trRef.current.nodes([selectedNode]);
+          }
           trRef.current.getLayer()?.batchDraw();
         }
       } else {

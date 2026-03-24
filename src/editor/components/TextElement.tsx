@@ -9,7 +9,7 @@ interface TextElementProps {
   element: Element;
 }
 
-export const TextElement: React.FC<TextElementProps> = ({ element }) => {
+export const TextElement: React.FC<TextElementProps> = React.memo(({ element }) => {
   const textRef = useRef<Konva.Text>(null);
   const { elements, updateElement, selectElement, template } = useEditorStore();
   const pushState = useHistoryStore(state => state.pushState);
@@ -31,7 +31,7 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
       lineHeight={element.lineHeight || 1}
       scaleX={1}
       scaleY={1}
-      draggable
+      draggable={!element.locked}
       dragBoundFunc={(pos) => {
         if (!template) return pos;
         const area = template.personalizationArea;
@@ -45,10 +45,12 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
         };
       }}
       onClick={(e) => {
+        if (element.locked) return;
         e.cancelBubble = true;
         selectElement(element.id);
       }}
       onTap={(e) => {
+        if (element.locked) return;
         e.cancelBubble = true;
         selectElement(element.id);
       }}
@@ -69,10 +71,13 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
         node.scaleX(1);
         node.scaleY(1);
 
+        let rot = node.rotation();
+        rot = ((rot % 360) + 360) % 360;
+
         updateElement(element.id, {
           x: node.x(),
           y: node.y(),
-          rotation: node.rotation(),
+          rotation: rot,
           // Use Math.max to prevent fontSize turning 0
           fontSize: Math.max(5, (element.fontSize || 40) * scaleX),
         });
@@ -80,4 +85,6 @@ export const TextElement: React.FC<TextElementProps> = ({ element }) => {
       }}
     />
   );
-};
+});
+
+TextElement.displayName = 'TextElement';
