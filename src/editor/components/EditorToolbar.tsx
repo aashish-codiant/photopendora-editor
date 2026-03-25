@@ -2,16 +2,21 @@ import React from 'react';
 import { Trash2, Undo, Redo, Download, Type, Save } from 'lucide-react';
 import { useEditorStore } from '../store/editorStore';
 import { useHistoryStore } from '../store/historyStore';
-import { exportDesign } from '../utils/exportDesign';
-import { generateSVG } from '../utils/generateSVG';
 import { generatePreview } from '../utils/generatePreview';
 import { exportStageAsImage } from '../utils/exportImage';
 import Konva from 'konva';
+import { saveDesign } from '../services/templateService';
+import { useSearchParams } from 'react-router';
 
 export const EditorToolbar: React.FC = () => {
+    const [searchParams] = useSearchParams();
+    const variantId = searchParams.get('variantId') || undefined;
+    const userId = searchParams.get('userId') || undefined;
+    const guestId = searchParams.get('guestId') || undefined;
+    const platform = searchParams.get('platform') || 'shopify';
+
     const { 
         addTextElement, 
-        addCurvedTextElement,
         deleteElement, 
         selectedElementId, 
         elements, 
@@ -47,34 +52,29 @@ export const EditorToolbar: React.FC = () => {
         // 2. Generate Preview
         const previewUrl = generatePreview(stage);
         
-        // 3. Generate SVG & Export JSON
-        const svgContent = generateSVG(elements, template?.canvasWidth, template?.canvasHeight);
-        const designJSON = elements;
-
-        // 4. Create Design Session
-        const session = {
-            designId,
-            productId: template?.productId,
-            designJSON,
+        // 3. Prepare Design Data
+        const designData = {
+            productId: template?.productId || '',
+            variantId,
+            designJson: elements,
             previewUrl,
-            svgContent, // Store content instead of URL for mock
-            status: 'submitted',
-            createdAt: new Date()
+            userId,
+            guestId,
+            platform
         };
 
-        // For now, save final session to localStorage too
-        localStorage.setItem(`session_${designId}`, JSON.stringify(session));
+        // 4. Save to Backend
+        const result = await saveDesign(designData);
         
-        console.log("Full Design Session Exported:", session);
-        alert("Design Session Submitted! Preview generated and designs exported.");
-        
-        // Trigger high-res PNG download
-        exportStageAsImage(stage, elements, { 
-            filename: `production-${template?.productId || 'design'}-${Date.now()}.png` 
-        });
-        
-        // Also trigger JSON download
-        exportDesign(elements, template?.productId);
+        if (result.success) {
+            alert("Design saved successfully!");
+            // Trigger high-res PNG download
+            exportStageAsImage(stage, elements, { 
+                filename: `production-${template?.productId || 'design'}-${Date.now()}.png` 
+            });
+        } else {
+            alert(`Failed to save design: ${result.error}`);
+        }
     };
 
     return (

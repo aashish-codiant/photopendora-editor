@@ -40,7 +40,7 @@ export const Editor: React.FC = () => {
             }
 
             try {
-                const tpl = await loadProductTemplate(productId);
+                const tpl = await loadProductTemplate(productId, variantId);
                 if (tpl) {
                     setTemplate(tpl);
                     setDesignId(`design_${Math.random().toString(36).substr(2, 9)}`);
