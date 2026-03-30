@@ -9,8 +9,17 @@ interface EditorState {
     template: ProductTemplate | null;
     designId: string | null;
     userUploads: string[];
+    isPersonalizationMode: boolean; // Flag to restrict editing
+    personalizationData: {
+        platform?: string | null;
+        shop?: string | null;
+        productId?: string | null;
+        variantId?: string | null;
+        quantity?: string | null;
+    } | null;
     setTemplate: (template: ProductTemplate) => void;
     setDesignId: (id: string) => void;
+    setPersonalizationMode: (isPersonalization: boolean, data: EditorState['personalizationData']) => void;
     addTextElement: () => void;
     addCurvedTextElement: () => void;
     addImageElement: (url: string) => void;
@@ -31,8 +40,14 @@ export const useEditorStore = create<EditorState>((set) => ({
     template: null,
     designId: null,
     userUploads: [],
+    isPersonalizationMode: false,
+    personalizationData: null,
     setTemplate: (template) => set({ template }),
     setDesignId: (id) => set({ designId: id }),
+    setPersonalizationMode: (isPersonalization, data) => set({ 
+        isPersonalizationMode: isPersonalization, 
+        personalizationData: data 
+    }),
     addTextElement: () => {
         const newId = `text_${Date.now()}`;
         const newElement: Element = {

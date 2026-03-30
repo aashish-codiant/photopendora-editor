@@ -6,7 +6,8 @@ import { AVAILABLE_FONTS } from '../constants/fonts';
 import { loadFont } from '../utils/fontLoader';
 
 export const PropertiesPanel: React.FC = () => {
-    const { elements, selectedElementId, updateElement, template } = useEditorStore();
+
+    const { elements, selectedElementId, updateElement, template, isPersonalizationMode } = useEditorStore();
     const pushState = useHistoryStore(state => state.pushState);
 
     const element = elements.find((el) => el.id === selectedElementId);
@@ -57,58 +58,60 @@ export const PropertiesPanel: React.FC = () => {
         <div className="p-4 space-y-6">
             <h2 className="text-xs uppercase font-bold text-slate-400 tracking-wider mb-4">Properties</h2>
 
-            {/* Position & Size */}
-            <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                    <h3 className="text-sm font-semibold text-slate-700">Transform</h3>
-                    <button
-                        onClick={() => handleUpdate({ locked: !element.locked }, true)}
-                        className={`p-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${element.locked ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-                        title={element.locked ? "Unlock element" : "Lock element"}
-                    >
-                        {element.locked ? <Lock size={14} /> : <Unlock size={14} />}
-                        {element.locked ? 'Locked' : 'Unlocked'}
-                    </button>
+            {/* Position & Size - Hidden in Personalization Mode */}
+            {!isPersonalizationMode && (
+                <div className="space-y-3 border-b border-slate-100 pb-6">
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-sm font-semibold text-slate-700">Transform</h3>
+                        <button
+                            onClick={() => handleUpdate({ locked: !element.locked }, true)}
+                            className={`p-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors ${element.locked ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            title={element.locked ? "Unlock element" : "Lock element"}
+                        >
+                            {element.locked ? <Lock size={14} /> : <Unlock size={14} />}
+                            {element.locked ? 'Locked' : 'Unlocked'}
+                        </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div>
+                            <label className="text-xs text-slate-500 mb-1 block">X</label>
+                            <input
+                                type="number"
+                                value={Math.round(element.x)}
+                                onChange={(e) => handleUpdate({ x: Number(e.target.value) })}
+                                onBlur={() => pushState(elements)}
+                                className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-xs text-slate-500 mb-1 block">Y</label>
+                            <input
+                                type="number"
+                                value={Math.round(element.y)}
+                                onChange={(e) => handleUpdate({ y: Number(e.target.value) })}
+                                onBlur={() => pushState(elements)}
+                                className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="text-xs text-slate-500 mb-1 block">Rotation (°)</label>
+                            <input
+                                type="number"
+                                min="-180"
+                                max="180"
+                                value={Math.round(element.rotation)}
+                                onChange={(e) => {
+                                    let val = Number(e.target.value);
+                                    val = ((val % 360) + 360) % 360;
+                                    handleUpdate({ rotation: val });
+                                }}
+                                onBlur={() => pushState(elements)}
+                                className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                    <div>
-                        <label className="text-xs text-slate-500 mb-1 block">X</label>
-                        <input
-                            type="number"
-                            value={Math.round(element.x)}
-                            onChange={(e) => handleUpdate({ x: Number(e.target.value) })}
-                            onBlur={() => pushState(elements)}
-                            className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-xs text-slate-500 mb-1 block">Y</label>
-                        <input
-                            type="number"
-                            value={Math.round(element.y)}
-                            onChange={(e) => handleUpdate({ y: Number(e.target.value) })}
-                            onBlur={() => pushState(elements)}
-                            className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                    <div>
-                        <label className="text-xs text-slate-500 mb-1 block">Rotation (°)</label>
-                        <input
-                            type="number"
-                            min="-180"
-                            max="180"
-                            value={Math.round(element.rotation)}
-                            onChange={(e) => {
-                                let val = Number(e.target.value);
-                                val = ((val % 360) + 360) % 360;
-                                handleUpdate({ rotation: val });
-                            }}
-                            onBlur={() => pushState(elements)}
-                            className="w-full px-2 py-1.5 text-sm border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-                </div>
-            </div>
+            )}
 
             {/* Text Specific Properties */}
             {(element.type === 'text' || element.type === 'curvedText') && (

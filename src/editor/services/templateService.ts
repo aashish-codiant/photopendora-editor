@@ -38,6 +38,21 @@ export const loadProductTemplate = async (productId: string, variantId?: string 
     }
 };
 
+export const loadDesign = async (designId: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/designs/${designId}`);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            return result.data; // Should contain elements and template data
+        }
+        return null;
+    } catch (error) {
+        console.error("Failed to load design:", error);
+        return null;
+    }
+};
+
 export const saveDesign = async (designData: {
     productId: string;
     variantId?: string;

@@ -7,7 +7,7 @@ export default function DesignCard({ design, editDesign }: { design: any, editDe
             <div className="p-4">
               <h3 className="text-lg font-semibold text-gray-900">{design.name}</h3>
               {/* <p className="text-gray-500 mt-1">{product.price}</p> */}
-              <button onClick={() => editDesign(design.id.toString())} className="mt-4 block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-150">
+              <button onClick={() => editDesign(design.id.toString())} className="cursor-pointer mt-4 block w-full text-center bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-150">
                 Edit
               </button>
             </div>
