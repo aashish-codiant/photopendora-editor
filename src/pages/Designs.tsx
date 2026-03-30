@@ -5,7 +5,7 @@ import { PageLayout } from "../layouts";
 export default function Designs() {
     const navigate = useNavigate();
     const createNewDesign = () => {
-        navigate('/editor');
+        navigate('/editor/create');
     }
 
     const editDesign = (id: string) => {
@@ -26,7 +26,7 @@ export default function Designs() {
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Designs</h1>
                     <p className="text-slate-400 text-sm dark:text-slate-600">Manage your product designs</p>
                 </div>
-                <button onClick={createNewDesign} className="flex items-center gap-2 bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
+                <button onClick={createNewDesign} className="cursor-pointer flex items-center gap-2 bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
                     <Plus size={20} />
                     New Design
                 </button>

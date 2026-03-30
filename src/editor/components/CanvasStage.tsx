@@ -15,19 +15,50 @@ export const CanvasStage: React.FC = () => {
     const { elements, deselectElement, setElements, template } = useEditorStore();
     const { undo, redo } = useHistoryStore();
     const stageRef = useRef<Konva.Stage>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = React.useState(1);
 
     const [baseImage] = useImage(template?.baseImage || '', 'anonymous');
+
+    // Handle Responsive Scaling
+    useEffect(() => {
+        const handleResize = () => {
+            if (!containerRef.current || !template) return;
+            const containerWidth = containerRef.current.clientWidth;
+            const containerHeight = containerRef.current.clientHeight;
+            
+            // Calculate scale to fit canvas inside container padding
+            const padding = 40;
+            const availableW = containerWidth - padding;
+            const availableH = containerHeight - padding;
+            
+            const scaleW = availableW / template.canvasWidth;
+            const scaleH = availableH / template.canvasHeight;
+            const newScale = Math.min(scaleW, scaleH, 1); // Never scale up beyond 1:1
+            
+            setScale(newScale);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Initial call
+        
+        // Wait for fonts/images to potentially change layout
+        const timer = setTimeout(handleResize, 100);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            clearTimeout(timer);
+        };
+    }, [template]);
 
     // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                 if (e.shiftKey) {
-                    // Redo: Ctrl+Shift+Z
                     const next = redo(elements);
                     if (next) setElements(next);
                 } else {
-                    // Undo: Ctrl+Z
                     const previous = undo(elements);
                     if (previous) setElements(previous);
                 }
@@ -42,32 +73,61 @@ export const CanvasStage: React.FC = () => {
     if (!template) return null;
 
     const handleStageClick = (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
-        // Deselect logic: clear selection if empty stage or background image is clicked
         const clickedOnEmpty = e.target === e.target.getStage() || e.target.attrs.id === 'base-image';
         if (clickedOnEmpty) {
             deselectElement();
         }
     };
 
+    // Calculate background image placement to maintain aspect ratio (contain)
+    const getBaseImageProps = () => {
+        if (!baseImage) return null;
+        
+        const imgRatio = baseImage.width / baseImage.height;
+        const canvasRatio = template.canvasWidth / template.canvasHeight;
+        
+        let width, height, x, y;
+        
+        if (imgRatio > canvasRatio) {
+            width = template.canvasWidth;
+            height = template.canvasWidth / imgRatio;
+            x = 0;
+            y = (template.canvasHeight - height) / 2;
+        } else {
+            height = template.canvasHeight;
+            width = template.canvasHeight * imgRatio;
+            x = (template.canvasWidth - width) / 2;
+            y = 0;
+        }
+        
+        return { x, y, width, height };
+    };
+
+    const imageProps = getBaseImageProps();
+
     return (
-        <div className="bg-white shadow-md rounded-sm overflow-hidden border border-slate-200">
-            <Stage
-                width={template.canvasWidth}
-                height={template.canvasHeight}
-                onMouseDown={handleStageClick}
-                onTouchStart={handleStageClick}
-                ref={stageRef}
-                className="bg-white"
-            >
-                <Layer>
-                    {baseImage && (
-                        <KonvaImage
-                            id="base-image"
-                            image={baseImage}
-                            width={template.canvasWidth}
-                            height={template.canvasHeight}
-                        />
-                    )}
+        <div ref={containerRef} className="w-full h-full flex items-center justify-center relative bg-slate-100/50">
+            <div className="shadow-2xl rounded-lg overflow-hidden border border-slate-200 bg-white" style={{
+                transform: `scale(${scale})`,
+                transformOrigin: 'center center',
+                transition: 'transform 0.2s ease-out'
+            }}>
+                <Stage
+                    width={template.canvasWidth}
+                    height={template.canvasHeight}
+                    onMouseDown={handleStageClick}
+                    onTouchStart={handleStageClick}
+                    ref={stageRef}
+                    className="bg-white"
+                >
+                    <Layer>
+                        {baseImage && imageProps && (
+                            <KonvaImage
+                                id="base-image"
+                                image={baseImage}
+                                {...imageProps}
+                            />
+                        )}
 
                     {/* Personalization Area */}
                     <Rect
@@ -102,5 +162,6 @@ export const CanvasStage: React.FC = () => {
                 </Layer>
             </Stage>
         </div>
-    );
+    </div>
+);
 };

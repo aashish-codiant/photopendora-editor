@@ -6,6 +6,7 @@ import EditorPage from "./editor/Editor";
 import Orders from "./pages/Orders";
 import Designs from "./pages/Designs";
 import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -15,7 +16,8 @@ export default function App() {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/editor" element={<EditorPage />} />
+      <Route path="/editor" element={<EditorPage mode="customize" />} />
+
 
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>
@@ -25,6 +27,14 @@ export default function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="designs" element={<Designs />} />
           <Route path="products" element={<Products />} />
+          <Route path="products/:id" element={<ProductDetail />} />
+
+          {/* Admin Editor routes */}
+          <Route path="editor">
+            <Route path="create" element={<EditorPage mode="create" />} />
+            <Route path=":id" element={<EditorPage mode="edit" />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>

@@ -22,12 +22,13 @@ export const EditorToolbar: React.FC = () => {
         elements, 
         setElements, 
         template,
-        designId
+        designId,
+        isPersonalizationMode
     } = useEditorStore();
     const { undo, redo, past, future } = useHistoryStore();
 
     const textElementsCount = elements.filter(el => el.type === 'text').length;
-    const canAddText = !template || !template.maxTextElements || textElementsCount < template.maxTextElements;
+    const canAddText = !isPersonalizationMode && (!template || !template.maxTextElements || textElementsCount < template.maxTextElements);
 
     const handleUndo = () => {
         const previous = undo(elements);
@@ -141,7 +142,7 @@ export const EditorToolbar: React.FC = () => {
                 </button>
             </div>
 
-            {selectedElementId && (
+            {!isPersonalizationMode && selectedElementId && (
                 <>
                     <div className="h-8 w-px bg-slate-200 mx-1" />
                     <button

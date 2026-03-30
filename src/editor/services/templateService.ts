@@ -29,11 +29,31 @@ export const loadProductTemplate = async (productId: string, variantId?: string 
                 allowedDesigns: [],
                 maxTextElements: 5,
                 maxCharacters: 50,
+                variants: product.variants?.map((v: any) => ({
+                    id: String(v.id),
+                    title: v.name || v.title || 'Default Variant',
+                    imageSrc: v.imageSrc || product.featureImage || '',
+                })) || [],
             };
         }
         return null;
     } catch (error) {
         console.error("Failed to load product template:", error);
+        return null;
+    }
+};
+
+export const loadDesign = async (designId: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/designs/${designId}`);
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            return result.data; // Should contain elements and template data
+        }
+        return null;
+    } catch (error) {
+        console.error("Failed to load design:", error);
         return null;
     }
 };
