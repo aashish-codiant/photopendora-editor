@@ -6,6 +6,7 @@ import EditorPage from "./editor/Editor";
 import Orders from "./pages/Orders";
 import Designs from "./pages/Designs";
 import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="designs" element={<Designs />} />
           <Route path="products" element={<Products />} />
+          <Route path="products/:id" element={<ProductDetail />} />
 
           {/* Admin Editor routes */}
           <Route path="editor">

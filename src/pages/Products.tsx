@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { PageLayout } from "../layouts";
-import { Loader2, AlertCircle, ShoppingBag } from "lucide-react";
+import { Loader2, AlertCircle, ShoppingBag, Settings } from "lucide-react";
 
 export default function Products() {
   const [products, setProducts] = useState<any[]>([]);
@@ -84,7 +84,12 @@ export default function Products() {
               </div>
               <div className="p-6 flex-1 flex flex-col">
                 <div className="mb-6">
-                  <h3 className="text-lg font-bold text-slate-800 leading-tight mb-2 group-hover:text-indigo-600 transition-colors line-clamp-2">{product.title || product.name}</h3>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-bold text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2 pr-2">{product.title || product.name}</h3>
+                    <Link to={`/products/${product.id}`} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Product Settings">
+                      <Settings size={18} />
+                    </Link>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-indigo-50 text-indigo-600 rounded-md border border-indigo-100">
                        {product.productType || "Standard"}
