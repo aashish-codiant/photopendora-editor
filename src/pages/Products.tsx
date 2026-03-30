@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-
+import { PageLayout } from "../layouts";
 export default function Products() {
   const products = [
     { id: 1, name: "T-Shirt Classic", price: "$25.00", image: "👕" },
@@ -9,9 +9,9 @@ export default function Products() {
   ];
 
   return (
-    <div className="flex-1 p-8 bg-gray-50">
+    <PageLayout>
       <h1 className="text-3xl font-bold text-gray-900 mb-8 sm:text-center">Select a Product to Personalize</h1>
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <div key={product.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
             <div className="h-48 bg-gray-100 flex items-center justify-center text-6xl">
@@ -27,6 +27,6 @@ export default function Products() {
           </div>
         ))}
       </div>
-    </div>
+    </PageLayout>
   );
 }
