@@ -19,6 +19,12 @@ export interface Design {
     productId: string;
 }
 
+export interface VariantInfo {
+    id: string;
+    title: string;
+    imageSrc: string;
+}
+
 export interface ProductTemplate {
     id: string;
     productId: string;
@@ -31,4 +37,5 @@ export interface ProductTemplate {
     allowedDesigns: Design[];
     maxTextElements: number;
     maxCharacters: number;
+    variants?: VariantInfo[];
 }

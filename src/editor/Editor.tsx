@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { VariantSelector } from './components/VariantSelector';
 import { CanvasStage } from './components/CanvasStage';
 import { EditorToolbar } from './components/EditorToolbar';
 import { PropertiesPanel } from './components/PropertiesPanel';
 import LayersPanel from './components/LayersPanel';
 import AssetLibrary from './components/AssetLibrary';
 import FontPanel from './components/FontPanel';
-import { Layers, Library, Settings2, Type, Loader2, AlertCircle } from 'lucide-react';
+import { Layers, Library, Settings2, Type, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { useSearchParams, useParams, useNavigate } from 'react-router';
 import { useEditorStore } from './store/editorStore';
 import { loadProductTemplate, loadDesign } from './services/templateService';
 import { autoSaveDesign } from './utils/autoSave';
 
 export const Editor: React.FC<{ mode?: 'create' | 'edit' | 'customize' }> = ({ mode = 'customize' }) => {
-    const [leftTab, setLeftTab] = useState<'layers' | 'assets'>('layers');
+    const [leftTab, setLeftTab] = useState<'layers' | 'assets' | 'variants'>('layers');
     const [rightTab, setRightTab] = useState<'properties' | 'fonts'>('properties');
     const [searchParams] = useSearchParams();
     const { id: designIdFromParams } = useParams();
@@ -239,6 +240,13 @@ export const Editor: React.FC<{ mode?: 'create' | 'edit' | 'customize' }> = ({ m
                 {/* Left Sidebar - Navigation & Primary Panels */}
                 <aside className="w-16 border-r bg-slate-900 flex flex-col items-center py-6 gap-6 shrink-0 z-10 shadow-lg">
                     <button
+                        onClick={() => setLeftTab('variants')}
+                        className={`p-3 rounded-xl transition-all ${leftTab === 'variants' ? 'bg-indigo-600 text-white shadow-indigo-500/50 shadow-lg scale-110' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+                        title="Product Variants"
+                    >
+                        <Sparkles size={22} strokeWidth={2.5} />
+                    </button>
+                    <button
                         onClick={() => setLeftTab('layers')}
                         className={`p-3 rounded-xl transition-all ${leftTab === 'layers' ? 'bg-indigo-600 text-white shadow-indigo-500/50 shadow-lg scale-110' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
                         title="Layers"
@@ -258,7 +266,9 @@ export const Editor: React.FC<{ mode?: 'create' | 'edit' | 'customize' }> = ({ m
 
                 {/* Left Secondary Panel */}
                 <aside className="w-72 border-r bg-white hidden md:block shrink-0 overflow-y-auto shadow-sm">
-                    {leftTab === 'layers' ? <LayersPanel /> : <AssetLibrary />}
+                    {leftTab === 'variants' && <VariantSelector />}
+                    {leftTab === 'layers' && <LayersPanel />}
+                    {leftTab === 'assets' && <AssetLibrary />}
                 </aside>
 
                 {/* Canvas Area */}

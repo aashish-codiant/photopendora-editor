@@ -29,6 +29,11 @@ export const loadProductTemplate = async (productId: string, variantId?: string 
                 allowedDesigns: [],
                 maxTextElements: 5,
                 maxCharacters: 50,
+                variants: product.variants?.map((v: any) => ({
+                    id: String(v.id),
+                    title: v.name || v.title || 'Default Variant',
+                    imageSrc: v.imageSrc || product.featureImage || '',
+                })) || [],
             };
         }
         return null;
