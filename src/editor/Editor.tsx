@@ -133,6 +133,13 @@ export const Editor: React.FC = () => {
                     >
                         <Library size={22} strokeWidth={2.5} />
                     </button>
+                    <button
+                        onClick={() => setLeftTab('assets')}
+                        className={`p-3 rounded-xl transition-all ${leftTab === 'assets' ? 'bg-indigo-600 text-white shadow-indigo-500/50 shadow-lg scale-110' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+                        title="Asset Library"
+                    >
+                        <Library size={22} strokeWidth={2.5} />
+                    </button>
                 </aside>
 
                 {/* Left Secondary Panel */}
