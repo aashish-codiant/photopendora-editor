@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Assets from "./pages/Assets";
-import EditorPage from "./editor/Editor";
+import EditorPage from "./features/editor/Editor";
 import Orders from "./pages/Orders";
 import Designs from "./pages/Designs";
 import Products from "./pages/Products";
