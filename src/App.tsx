@@ -1,15 +1,17 @@
+import {
+  Home,
+  Login,
+  Assets,
+  Orders,
+  Designs,
+  Products,
+  NotFound,
+  ProductDetail,
+} from "./pages";
 import { Routes, Route } from "react-router";
 import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/Home";
-import Assets from "./pages/Assets";
 import EditorPage from "./features/editor/Editor";
-import Orders from "./pages/Orders";
-import Designs from "./pages/Designs";
-import Products from "./pages/Products";
-import ProductDetail from "./pages/ProductDetail";
-import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -17,7 +19,6 @@ export default function App() {
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/editor" element={<EditorPage mode="customize" />} />
-
 
       {/* Protected routes */}
       <Route element={<ProtectedRoute />}>

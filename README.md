@@ -1,73 +1,100 @@
-# React + TypeScript + Vite
+# PhotoPandora Editor Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PhotoPandora Editor Client is a high-performance, interactive product personalization tool designed for Shopify. It enables merchants and customers to create, customize, and manage product designs using a powerful canvas-based interface.
 
-Currently, two official plugins are available:
+Built with **React 19**, **Vite**, and **Konva**, the editor provides a smooth, real-time editing experience with advanced features like text manipulation, image uploads, and template management.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🎨 Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Interactive Canvas Editor**: Powered by `react-konva` for seamless layering, transformations, and real-time previews.
+- **Advanced Text Editing**: Support for curved text, custom fonts (via Google Fonts), colors, and effects.
+- **Product Personalization**: Allow customers to add their own images, text, and ornaments to Shopify products.
+- **Template Management**: Create and manage design templates for different product variants.
+- **Asset Library**: Integrated management for images, icons, and ornaments.
+- **Order & Design Workflow**: Complete lifecycle management from design creation to order fulfillment.
+- **Modern UI/UX**: Built with Tailwind CSS v4 and Radix UI primitives for a sleek, responsive experience.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 💻 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) + [Shadcn/UI](https://ui.shadcn.com/)
+- **Canvas Engine**: [Konva](https://konvajs.org/) + [React-Konva](https://konvajs.org/docs/react/index.html)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Routing**: [React Router 7](https://reactrouter.com/)
+- **Networking**: [Axios](https://axios-http.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm or pnpm
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd photopandora-editor-client
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Configure environment variables:
+   Create a `.env` file based on `.env.example` (if available) with your API endpoints and Shopify configuration.
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and navigate to `http://localhost:5173`.
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+├── app/            # Application-wide providers and configuration
+├── components/     # Reusable UI components (buttons, inputs, etc.)
+├── features/       # Modular features containing components, hooks, and logic
+│   ├── auth/       # Authentication and login flow
+│   ├── editor/     # Core canvas editor (the heart of the app)
+│   ├── products/   # Product listing and detail management
+│   ├── designs/    # Design templates and saved user designs
+│   └── orders/     # Order tracking and management
+├── hooks/          # Global custom React hooks
+├── layouts/        # Shared page layouts
+├── lib/            # External library configurations (e.g., shadcn/utils)
+├── pages/          # Top-level page components
+├── services/       # API services and external integrations
+├── store/          # Zustand global state stores
+└── utils/          # Helper functions and constants
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `npm run dev`: Starts the development server with HMR.
+- `npm run build`: Generates the production bundle.
+- `npm run lint`: Runs ESLint for code quality checks.
+- `npm run preview`: Previews the production build locally.
+
+---
+
+## 📄 License
+
+This project is private and proprietary. All rights reserved.
